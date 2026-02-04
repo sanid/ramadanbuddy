@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { getPrayerTimes, type PrayerData } from '../services/prayerService';
+import { getPrayerTimes, getPrayerTimesByCoords, type PrayerData } from '../services/prayerService';
 import { format, differenceInSeconds } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import dailyInsights from '../data/daily_insights.json';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { settings, quranProgress, habits } = useApp();
   const [prayerData, setPrayerData] = useState<PrayerData | null>(null);
   const [countdown, setCountdown] = useState({ h: '00', m: '00', s: '00' });
@@ -11,14 +14,19 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchPrayers = async () => {
       try {
-        const data = await getPrayerTimes(settings.location.city, settings.location.country);
+        let data;
+        if (settings.location.lat && settings.location.lng && !settings.location.isManual) {
+          data = await getPrayerTimesByCoords(settings.location.lat, settings.location.lng, 2, settings.school);
+        } else {
+          data = await getPrayerTimes(settings.location.city, settings.location.country, 2, settings.school);
+        }
         setPrayerData(data);
       } catch (error) {
         console.error('Error fetching prayer times:', error);
       }
     };
     fetchPrayers();
-  }, [settings.location]);
+  }, [settings.location, settings.school]);
 
   useEffect(() => {
     if (!prayerData) return;
@@ -54,6 +62,9 @@ const Dashboard: React.FC = () => {
   const today = format(new Date(), 'yyyy-MM-dd');
   const quranPercent = Math.round((quranProgress.completedPages / quranProgress.totalPages) * 100);
 
+  const hijriDay = prayerData ? parseInt(prayerData.date.hijri.day) : 1;
+  const todayInsight = dailyInsights.find(i => i.day === hijriDay) || dailyInsights[0];
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center p-4 justify-between bg-transparent">
@@ -62,24 +73,19 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="flex-1 px-3">
           <h1 className="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">Ramadan Buddy</h1>
-          <p className="text-xs text-primary font-medium">{prayerData?.date.hijri.day} {prayerData?.date.hijri.month.en} {prayerData?.date.hijri.year} AH</p>
-        </div>
-        <div className="flex gap-2">
-          <button className="flex size-10 items-center justify-center rounded-full bg-slate-100 dark:bg-white/5">
-            <span className="material-symbols-outlined text-xl">notifications</span>
-          </button>
+          <p className="text-xs text-primary font-medium">{prayerData?.date.hijri.day} {prayerData?.date.hijri.month.ar} {prayerData?.date.hijri.year} AH</p>
         </div>
       </header>
 
-      <div className="px-4 py-6">
-        <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 text-center">
-          <p className="text-sm font-medium text-primary mb-4 uppercase tracking-widest">Countdown to Iftar</p>
-          <div className="flex gap-4 justify-center">
-            <TimeUnit value={countdown.h} label="Hours" />
-            <div className="text-2xl font-bold flex items-center pt-2 text-primary">:</div>
-            <TimeUnit value={countdown.m} label="Minutes" />
-            <div className="text-2xl font-bold flex items-center pt-2 text-primary">:</div>
-            <TimeUnit value={countdown.s} label="Seconds" />
+      <div className="px-4 py-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 text-center">
+          <p className="text-xs font-medium text-primary mb-3 uppercase tracking-widest">Countdown bis Iftar</p>
+          <div className="flex gap-3 justify-center">
+            <TimeUnit value={countdown.h} label="Std" />
+            <div className="text-xl font-bold flex items-center pt-2 text-primary">:</div>
+            <TimeUnit value={countdown.m} label="Min" />
+            <div className="text-xl font-bold flex items-center pt-2 text-primary">:</div>
+            <TimeUnit value={countdown.s} label="Sek" />
           </div>
           <div className="mt-6 flex items-center justify-center gap-2 text-slate-400 text-xs">
             <span className="material-symbols-outlined text-sm">location_on</span>
@@ -99,17 +105,17 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="px-4 mb-8">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
+        <h3 className="text-base font-bold mb-3 flex items-center gap-2 text-slate-900 dark:text-white">
           <span className="material-symbols-outlined text-primary">menu_book</span>
-          Quran Progress
+          Quran Fortschritt
         </h3>
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#1b3a31] to-[#10221c] p-5 border border-white/10">
-          <div className="flex justify-between items-start mb-4">
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#1b3a31] to-[#10221c] p-4 border border-white/10">
+          <div className="flex justify-between items-start mb-3">
             <div>
-              <p className="text-xs text-primary font-medium uppercase tracking-wide">Overall Progress</p>
-              <h4 className="text-2xl font-bold text-white">{quranProgress.completedPages} / {quranProgress.totalPages} Pages</h4>
+              <p className="text-[10px] text-primary font-medium uppercase tracking-wide">Gesamtfortschritt</p>
+              <h4 className="text-xl font-bold text-white">{quranProgress.completedPages} / {quranProgress.totalPages} Seiten</h4>
             </div>
-            <div className="h-12 w-12 rounded-full border-4 border-primary/20 flex items-center justify-center relative">
+            <div className="h-10 w-10 rounded-full border-4 border-primary/20 flex items-center justify-center relative">
               <svg className="absolute -rotate-90 w-12 h-12">
                 <circle className="text-primary" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" strokeDasharray="125.6" strokeDashoffset={125.6 * (1 - quranPercent / 100)} strokeWidth="4"></circle>
               </svg>
@@ -120,16 +126,21 @@ const Dashboard: React.FC = () => {
             <div className="bg-primary h-2 rounded-full transition-all duration-500" style={{ width: `${quranPercent}%` }}></div>
           </div>
           <div className="flex justify-between items-center text-[10px] text-slate-400">
-            <span>Continue where you left off</span>
-            <button className="text-primary font-bold flex items-center uppercase">Continue <span className="material-symbols-outlined text-sm ml-1">chevron_right</span></button>
+            <span>Lesen fortsetzen</span>
+            <button
+              onClick={() => navigate(`/quran?surah=${quranProgress.lastSurah}`)}
+              className="text-primary font-bold flex items-center uppercase"
+            >
+              Weiter <span className="material-symbols-outlined text-sm ml-1">chevron_right</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="px-4">
+      <div className="px-4 mb-8">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
           <span className="material-symbols-outlined text-primary">task_alt</span>
-          Daily Habits
+          Tägliche Habits
         </h3>
         <div className="space-y-3">
           {habits.slice(0, 3).map(habit => (
@@ -137,16 +148,57 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
       </div>
+
+      <div className="px-4 space-y-6">
+        <h3 className="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+          <span className="material-symbols-outlined text-primary">volunteer_activism</span>
+          Daily Insights
+        </h3>
+
+        {/* Verse of the Day */}
+        <div className="p-5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="material-symbols-outlined text-primary text-sm">menu_book</span>
+            <p className="text-primary text-xs font-bold uppercase tracking-widest">Vers des Tages</p>
+          </div>
+          <p className="text-slate-900 dark:text-white text-lg font-bold mb-2">{todayInsight.verse.reference}</p>
+          <p className="text-slate-800 dark:text-slate-200 text-xl text-right font-serif mb-2" dir="rtl">{todayInsight.verse.arabic}</p>
+          <p className="text-slate-600 dark:text-slate-400 text-sm italic border-l-2 border-primary/30 pl-3">{todayInsight.verse.german}</p>
+        </div>
+
+        {/* Hadith of the Day */}
+        <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-sm">chat_bubble</span>
+              <p className="text-primary text-xs font-bold uppercase tracking-widest">Hadith des Tages</p>
+            </div>
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-primary/20 text-primary">{todayInsight.hadith.source}</span>
+          </div>
+          <p className="text-slate-900 dark:text-white text-lg font-medium italic mb-2">"{todayInsight.hadith.text}"</p>
+          <p className="text-slate-600 dark:text-slate-400 text-xs">Überliefert von {todayInsight.hadith.narrator}</p>
+        </div>
+
+        {/* Historical Event */}
+        <div className="p-5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="material-symbols-outlined text-primary text-sm">history</span>
+            <p className="text-primary text-xs font-bold uppercase tracking-widest">Historisches Ereignis</p>
+          </div>
+          <p className="text-slate-900 dark:text-white text-lg font-bold">{todayInsight.historicalEvent.title}</p>
+          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{todayInsight.historicalEvent.description}</p>
+        </div>
+      </div>
     </div>
   );
 };
 
 const TimeUnit = ({ value, label }: { value: string, label: string }) => (
-  <div className="flex flex-col items-center gap-2">
-    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/10 shadow-lg">
-      <p className="text-2xl font-bold text-white">{value}</p>
+  <div className="flex flex-col items-center gap-1">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/10 shadow-lg">
+      <p className="text-xl font-bold text-white">{value}</p>
     </div>
-    <p className="text-[10px] uppercase font-semibold text-slate-400">{label}</p>
+    <p className="text-[8px] uppercase font-semibold text-slate-400">{label}</p>
   </div>
 );
 
@@ -165,7 +217,7 @@ const HabitItem = ({ habit, isCompleted }: { habit: any, isCompleted: boolean })
       </div>
       <div>
         <p className="font-bold">{habit.name}</p>
-        <p className="text-xs text-slate-400">{isCompleted ? 'Completed' : 'Pending'}</p>
+        <p className="text-xs text-slate-400">{isCompleted ? 'Erledigt' : 'Offen'}</p>
       </div>
     </div>
     <div className={`size-6 rounded-full flex items-center justify-center ${isCompleted ? 'bg-primary' : 'border-2 border-slate-600'}`}>

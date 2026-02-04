@@ -39,8 +39,8 @@ export interface PrayerData {
 
 const BASE_URL = 'https://api.aladhan.com/v1';
 
-export const getPrayerTimes = async (city: string, country: string, method: number = 2): Promise<PrayerData> => {
-  const response = await fetch(`${BASE_URL}/timingsByCity?city=${city}&country=${country}&method=${method}`);
+export const getPrayerTimes = async (city: string, country: string, method: number = 2, school: number = 0): Promise<PrayerData> => {
+  const response = await fetch(`${BASE_URL}/timingsByCity?city=${city}&country=${country}&method=${method}&school=${school}`);
   const data = await response.json();
   if (data.code === 200) {
     return data.data;
@@ -48,8 +48,8 @@ export const getPrayerTimes = async (city: string, country: string, method: numb
   throw new Error('Failed to fetch prayer times');
 };
 
-export const getPrayerTimesByCoords = async (latitude: number, longitude: number, method: number = 2): Promise<PrayerData> => {
-  const response = await fetch(`${BASE_URL}/timings?latitude=${latitude}&longitude=${longitude}&method=${method}`);
+export const getPrayerTimesByCoords = async (latitude: number, longitude: number, method: number = 2, school: number = 0): Promise<PrayerData> => {
+  const response = await fetch(`${BASE_URL}/timings?latitude=${latitude}&longitude=${longitude}&method=${method}&school=${school}`);
   const data = await response.json();
   if (data.code === 200) {
     return data.data;

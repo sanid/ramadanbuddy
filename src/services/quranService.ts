@@ -30,8 +30,8 @@ export const getSurahDetail = async (surahNumber: number, edition: string = 'qur
   return data.data;
 };
 
-export const getSurahWithTranslation = async (surahNumber: number, translationEdition: string = 'de.aburida'): Promise<any> => {
-  const response = await fetch(`${BASE_URL}/surah/${surahNumber}/editions/quran-uthmani,${translationEdition},ar.alafasy`);
+export const getSurahWithTranslation = async (surahNumber: number, audioEdition: string = 'ar.alafasy', translationEdition: string = 'de.aburida'): Promise<any> => {
+  const response = await fetch(`${BASE_URL}/surah/${surahNumber}/editions/quran-uthmani,${translationEdition},${audioEdition}`);
   const data = await response.json();
   return data.data; // This returns an array of editions
 };
