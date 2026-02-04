@@ -5,7 +5,6 @@ import Dashboard from './pages/Dashboard';
 import Prayers from './pages/Prayers';
 import Quran from './pages/Quran';
 import Tracker from './pages/Tracker';
-import Insights from './pages/Insights';
 
 function App() {
   return (
@@ -17,7 +16,6 @@ function App() {
             <Route path="prayers" element={<Prayers />} />
             <Route path="quran" element={<Quran />} />
             <Route path="tracker" element={<Tracker />} />
-            <Route path="insights" element={<Insights />} />
           </Route>
         </Routes>
       </Router>
