@@ -1,0 +1,46 @@
+[
+  {
+    "day": 1,
+    "verse": {
+      "reference": "Al-Baqarah 2:183",
+      "arabic": "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ",
+      "translation": "O die ihr glaubt! Das Fasten ist euch vorgeschrieben, so wie es denen vor euch vorgeschrieben war, auf daß ihr gottesfürchtig werden möget."
+    },
+    "hadith": {
+      "text": "The best of you are those who learn the Quran and teach it.",
+      "narrator": "Narrated by Uthman bin Affan (RA)",
+      "source": "Sahih Bukhari"
+    },
+    "historicalEvent": {
+      "title": "The Beginning of Revelation",
+      "description": "The first verses of the Quran were revealed to Prophet Muhammad (PBUH) in the Cave of Hira during Ramadan."
+    },
+    "figure": {
+      "name": "Prophet Muhammad (PBUH)",
+      "period": "570–632 CE",
+      "description": "The final messenger of Allah, to whom the Quran was revealed."
+    }
+  },
+  {
+    "day": 12,
+    "verse": {
+      "reference": "Al-Baqarah 2:185",
+      "arabic": "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ هُدًى لِّلنَّاسِ وَبَيِّنَاتٍ مِّنَ الْهُدَىٰ وَالْفُرْقَانِ",
+      "translation": "Der Monat Ramadan (ist es), in dem der Koran als Rechtleitung für die Menschen herabgesandt worden ist..."
+    },
+    "hadith": {
+      "text": "Whoever fasts Ramadan out of faith and in the hope of reward, his previous sins will be forgiven.",
+      "narrator": "Narrated by Abu Hurayrah (RA)",
+      "source": "Sahih Bukhari"
+    },
+    "historicalEvent": {
+      "title": "The Battle of Badr",
+      "description": "Occurred on the 17th of Ramadan, 2 AH. A pivotal victory for the early Muslim community."
+    },
+    "figure": {
+      "name": "Imam Al-Ghazali",
+      "period": "450–505 AH / 1058–1111 CE",
+      "description": "One of the most influential thinkers of the Islamic Golden Age. Known as 'Hujjat al-Islam'."
+    }
+  }
+]
