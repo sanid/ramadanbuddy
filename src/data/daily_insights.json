@@ -1,0 +1,36 @@
+[
+  {
+    "day": 1,
+    "verse": {
+      "reference": "Al-Baqarah 2:185",
+      "arabic": "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ هُدًى لِّلنَّاسِ وَبَيِّنَاتٍ مِّنَ الْهُدَىٰ وَالْفُرْقَانِ",
+      "german": "Der Monat Ramadan (ist es), in dem der Koran als Rechtleitung für die Menschen herabgesandt worden ist..."
+    },
+    "hadith": {
+      "text": "Die Besten unter euch sind diejenigen, die den Koran lernen und lehren.",
+      "source": "Sahih Bukhari",
+      "narrator": "Uthman bin Affan (RA)"
+    },
+    "historicalEvent": {
+      "title": "Die Schlacht von Badr",
+      "description": "Fand am 17. Ramadan 2 n.H. statt. Ein entscheidender Sieg für die frühe muslimische Gemeinschaft."
+    }
+  },
+  {
+    "day": 12,
+    "verse": {
+      "reference": "Al-Baqarah 2:183",
+      "arabic": "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ",
+      "german": "O ihr, die ihr glaubt! Das Fasten ist euch vorgeschrieben, so wie es denen vor euch vorgeschrieben war, damit ihr gottesfürchtig werdet."
+    },
+    "hadith": {
+      "text": "Wer den Ramadan aus Glauben und in der Hoffnung auf Belohnung fastet, dem werden seine vergangenen Sünden vergeben.",
+      "source": "Sahih Bukhari",
+      "narrator": "Abu Huraira (RA)"
+    },
+    "historicalEvent": {
+      "title": "Eroberung von Mekka",
+      "description": "Fand im Ramadan 8 n.H. statt. Ein Wendepunkt in der islamischen Geschichte."
+    }
+  }
+]

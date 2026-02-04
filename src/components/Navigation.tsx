@@ -4,10 +4,9 @@ import { cn } from '../utils/cn';
 
 const navItems = [
   { icon: 'home', label: 'Home', path: '/' },
-  { icon: 'schedule', label: 'Prayers', path: '/prayers' },
+  { icon: 'schedule', label: 'Gebete', path: '/prayers' },
   { icon: 'auto_stories', label: 'Quran', path: '/quran' },
   { icon: 'checklist_rtl', label: 'Tracker', path: '/tracker' },
-  { icon: 'volunteer_activism', label: 'Insights', path: '/insights' },
 ];
 
 export const Navigation: React.FC = () => {

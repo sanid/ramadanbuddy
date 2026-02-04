@@ -19,9 +19,10 @@ interface AppState {
     totalPages: number;
   };
   settings: {
-    location: { city: string; country: string; lat?: number; lng?: number };
+    location: { city: string; country: string; lat?: number; lng?: number; isManual: boolean };
     theme: 'light' | 'dark';
     language: string;
+    school: 0 | 1; // 0 for Shafi/Standard, 1 for Hanafi
   };
 }
 
@@ -34,10 +35,10 @@ interface AppContextType extends AppState {
 }
 
 const defaultHabits: Habit[] = [
-  { id: 'fasting', name: 'Fasting Today', icon: 'restaurant_menu', color: 'primary', completedDays: [] },
+  { id: 'fasting', name: 'Heute gefastet', icon: 'restaurant_menu', color: 'primary', completedDays: [] },
   { id: 'taraweeh', name: 'Taraweeh', icon: 'nights_stay', color: 'accent-gold', completedDays: [] },
-  { id: 'dhikr', name: 'Read Dhikr', icon: 'auto_awesome', color: 'orange-500', description: '100x SubhanAllah', completedDays: [] },
-  { id: 'sadaqah', name: 'Give Sadaqah', icon: 'volunteer_activism', color: 'blue-500', description: 'Daily small donation', completedDays: [] },
+  { id: 'dhikr', name: 'Dhikr gelesen', icon: 'auto_awesome', color: 'orange-500', description: '100x SubhanAllah', completedDays: [] },
+  { id: 'sadaqah', name: 'Sadaqah geben', icon: 'volunteer_activism', color: 'blue-500', description: 'Kleine tägliche Spende', completedDays: [] },
 ];
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -58,9 +59,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         totalPages: 604,
       },
       settings: {
-        location: { city: 'Dubai', country: 'United Arab Emirates' },
+        location: { city: 'Berlin', country: 'Germany', isManual: false },
         theme: 'dark',
-        language: 'en',
+        language: 'de',
+        school: 0,
       },
     };
   });

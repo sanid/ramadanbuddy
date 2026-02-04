@@ -1,11 +1,35 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { format, eachDayOfInterval, isSameDay, addDays, subDays } from 'date-fns';
+import { de } from 'date-fns/locale';
 import { cn } from '../utils/cn';
 
 const Tracker: React.FC = () => {
-  const { habits, prayerCompletion, toggleHabit, togglePrayer } = useApp();
+  const { habits, prayerCompletion, toggleHabit, togglePrayer, addHabit } = useApp();
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [isAddingHabit, setIsAddingHabit] = useState(false);
+  const [newHabitName, setNewHabitName] = useState('');
+  const [newHabitIcon, setNewHabitIcon] = useState('favorite');
+
+  const availableIcons = [
+    'favorite', 'menu_book', 'restaurant_menu', 'nights_stay',
+    'auto_awesome', 'volunteer_activism', 'water_drop', 'fitness_center',
+    'self_improvement', 'psychology', 'schedule', 'edit_note'
+  ];
+
+  const handleAddHabit = () => {
+    if (newHabitName.trim()) {
+      addHabit({
+        id: Date.now().toString(),
+        name: newHabitName,
+        icon: newHabitIcon,
+        color: 'primary',
+      });
+      setNewHabitName('');
+      setIsAddingHabit(false);
+    }
+  };
 
   const dateKey = format(selectedDate, 'yyyy-MM-dd');
   const todayPrayers = prayerCompletion[dateKey] || {};
@@ -32,11 +56,8 @@ const Tracker: React.FC = () => {
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <span className="material-symbols-outlined">mosque</span>
           </div>
-          <h1 className="text-base font-bold leading-tight tracking-tight flex-1 text-center">Habit & Prayer</h1>
+          <h1 className="text-base font-bold leading-tight tracking-tight flex-1 text-center">Habit & Gebet</h1>
           <div className="flex w-10 items-center justify-end">
-            <button className="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
           </div>
         </div>
       </header>
@@ -50,7 +71,7 @@ const Tracker: React.FC = () => {
               </button>
               <div className="text-center">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-primary mb-0.5">Ramadan 1445</p>
-                <p className="text-sm font-bold">{format(selectedDate, 'MMMM yyyy')}</p>
+                <p className="text-sm font-bold">{format(selectedDate, 'MMMM yyyy', { locale: de })}</p>
               </div>
               <button onClick={() => setSelectedDate(addDays(selectedDate, 7))} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
                 <span className="material-symbols-outlined text-xl">chevron_right</span>
@@ -80,7 +101,7 @@ const Tracker: React.FC = () => {
           <div className="flex items-center justify-between mb-4 px-1">
             <h2 className="text-base font-bold tracking-tight">Salah Tracker</h2>
             <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full uppercase tracking-tight">
-              {completedPrayersCount} / 5 Complete
+              {completedPrayersCount} / 5 Erledigt
             </span>
           </div>
           <div className="space-y-3">
@@ -102,7 +123,7 @@ const Tracker: React.FC = () => {
                   <div>
                     <p className="font-bold text-sm">{prayer.name}</p>
                     <p className={cn("text-[10px] font-medium", todayPrayers[prayer.name] ? "text-primary" : "text-slate-500")}>
-                      {todayPrayers[prayer.name] ? 'Completed' : prayer.time}
+                      {todayPrayers[prayer.name] ? 'Erledigt' : prayer.time}
                     </p>
                   </div>
                 </div>
@@ -119,11 +140,47 @@ const Tracker: React.FC = () => {
 
         <section className="px-4 py-6 mb-12">
           <div className="flex items-center justify-between mb-4 px-1">
-            <h2 className="text-base font-bold tracking-tight">Custom Habits</h2>
-            <button className="text-primary text-[11px] font-bold flex items-center gap-1 uppercase tracking-tight">
-              <span className="material-symbols-outlined text-sm">add_circle</span> Add New
+            <h2 className="text-base font-bold tracking-tight">Eigene Habits</h2>
+            <button
+              onClick={() => setIsAddingHabit(!isAddingHabit)}
+              className="text-primary text-[11px] font-bold flex items-center gap-1 uppercase tracking-tight"
+            >
+              <span className="material-symbols-outlined text-sm">add_circle</span> {isAddingHabit ? 'Abbrechen' : 'Neu hinzufügen'}
             </button>
           </div>
+
+          {isAddingHabit && (
+            <div className="mb-6 p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-primary/20 shadow-lg">
+              <input
+                type="text"
+                value={newHabitName}
+                onChange={(e) => setNewHabitName(e.target.value)}
+                placeholder="Habit Name"
+                className="w-full mb-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-transparent p-2 text-sm focus:ring-primary"
+              />
+              <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Icon wählen</p>
+              <div className="grid grid-cols-6 gap-2 mb-4">
+                {availableIcons.map(icon => (
+                  <button
+                    key={icon}
+                    onClick={() => setNewHabitIcon(icon)}
+                    className={cn(
+                      "size-10 rounded-lg flex items-center justify-center transition-all",
+                      newHabitIcon === icon ? "bg-primary text-background-dark shadow-md" : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                    )}
+                  >
+                    <span className="material-symbols-outlined">{icon}</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={handleAddHabit}
+                className="w-full bg-primary text-background-dark py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20"
+              >
+                Habit speichern
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-3">
             {habits.map((habit) => {
               const isCompleted = habit.completedDays.includes(dateKey);
